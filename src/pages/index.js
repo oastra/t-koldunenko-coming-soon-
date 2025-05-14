@@ -24,12 +24,9 @@ export default function Home() {
         className="w-full max-w-md bg-white p-6 rounded shadow text-left"
       >
         <p className="mb-4 text-sm text-gray-700">
-          Please leave your <strong>name</strong> and describe your current
-          situation — what your business does, and what kind of help you’re
-          looking for online. I’ll get back to you with a
-          <strong>free consultation</strong>.
+          Tell me what your business does and how I can help you grow online.
+          I’ll get back to you soon with a free consultation.
         </p>
-
         <input
           type="text"
           name="name"
@@ -43,8 +40,13 @@ export default function Home() {
           placeholder="yourmail@yourmail.com"
           required
           className="w-full mb-3 p-2 border border-gray-300 rounded"
+        />{" "}
+        <input
+          type="tel"
+          name="Phone"
+          placeholder="Your Phone Number"
+          className="w-full mb-3 p-2 border border-gray-300 rounded"
         />
-
         <textarea
           name="message"
           placeholder="Describe your business and what you need help with"
@@ -52,7 +54,6 @@ export default function Home() {
           rows="5"
           className="w-full mb-3 p-2 border border-gray-300 rounded"
         />
-
         <button
           type="submit"
           className="w-full bg-black text-white py-2 rounded hover:bg-gray-800 transition"
