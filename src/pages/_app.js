@@ -1,31 +1,32 @@
 import Head from "next/head";
-import "../styles/globals.css"; // if you're using global styles
+import Script from "next/script";
+import "@/styles/globals.css";
 
 export default function MyApp({ Component, pageProps }) {
   return (
     <>
       <Head>
-        {/* Google Analytics */}
-        <script
-          async
-          src="https://www.googletagmanager.com/gtag/js?id=G-SBM45GGPYP"
-        ></script>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', 'G-SBM45GGPYP');
-            `,
-          }}
-        />
-
-        <meta
-          name="facebook-domain-verification"
-          content="wgkrfydrd2rpfihgk47e2j09ebnayr"
-        />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
+
+      {/* Google Analytics */}
+      <Script
+        strategy="afterInteractive"
+        src="https://www.googletagmanager.com/gtag/js?id=G-XT11J1J9N8"
+      />
+      <Script
+        id="google-analytics"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{
+          __html: `
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-XT11J1J9N8');
+          `,
+        }}
+      />
+
       <Component {...pageProps} />
     </>
   );

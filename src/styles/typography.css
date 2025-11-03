@@ -1,0 +1,87 @@
+@layer components {
+  /* HEADINGS */
+
+  .text-h1 {
+    @apply text-[90px] leading-[110%] font-medium font-display;
+  }
+
+  .text-h1-tablet {
+    @apply text-[54px] leading-[110%] font-medium font-display;
+  }
+
+  .text-h1-mobile {
+    @apply text-[32px] leading-[110%] font-medium font-display;
+  }
+
+  .text-h2 {
+    @apply text-[66px] leading-[110%] font-medium font-display;
+  }
+
+  .text-h2-tablet {
+    @apply text-[48px] leading-[110%] font-medium font-display;
+  }
+
+  .text-h2-mobile {
+    @apply text-[32px] leading-[110%] font-medium font-display;
+  }
+
+  .text-h3 {
+    @apply text-[48px] leading-[130%] font-display;
+  }
+
+  .text-h3-medium {
+    @apply text-[48px] leading-[130%] font-medium font-display;
+  }
+
+  .text-h3-tablet {
+    @apply text-[42px] leading-[130%] font-display;
+  }
+
+  .text-h3-mobile {
+    @apply text-[18px] leading-[150%] font-text;
+  }
+
+  .text-h3-mobile-medium {
+    @apply text-[24px] leading-[110%] font-medium font-display;
+  }
+
+  .text-h4 {
+    @apply text-[36px] leading-[110%] font-medium font-display;
+  }
+
+  .text-h4-tablet {
+    @apply text-[24px] leading-[110%] font-display;
+  }
+
+  .text-h4-mobile {
+    @apply text-[18px] leading-[150%] font-text;
+  }
+
+  .text-h5 {
+    @apply text-[16px] leading-[120%] font-text;
+  }
+
+  .text-h6 {
+    @apply text-[14px] leading-[100%] font-text;
+  }
+
+  .text-h6-opx {
+    @apply text-[14px] leading-[130%] font-text;
+  }
+
+  /* CTA & FOOTER */
+
+  .text-cta {
+    @apply text-[18px] leading-[110%] font-text;
+  }
+
+  .text-footer {
+    @apply text-[54px] leading-[120%] font-display;
+  }
+
+  /* Paragraph / Body */
+
+  .text-body {
+    @apply text-[18px] leading-[150%] font-text;
+  }
+}
