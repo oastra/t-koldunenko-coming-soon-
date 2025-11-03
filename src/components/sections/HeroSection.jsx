@@ -9,7 +9,7 @@ const HeroSection = () => {
           {/* Illustration */}
           <div className="mb-6 lg:mb-8">
             <img
-              src="/images/women-in-tech.png"
+              src="/images/roofing1.png"
               alt="Coming Soon"
               className="max-w-sm mx-auto lg:mx-0 w-full"
             />
