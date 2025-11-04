@@ -255,7 +255,7 @@ const EnquiryForm = () => {
             htmlFor="message"
             className="block text-sm font-medium text-gray-700 mb-1"
           >
-            Tell me about your project... *
+            Tell me about your Enquiry... *
           </label>
           <textarea
             id="message"
