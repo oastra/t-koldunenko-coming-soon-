@@ -20,8 +20,9 @@ const EnquiryForm = () => {
   };
 
   const validatePhone = (phone) => {
-    // Australian phone number format (flexible)
-    const re = /^(\+?61|0)[2-478](?:[ -]?[0-9]){8}$/;
+    // Flexible international phone format
+    const re =
+      /^[\+]?[(]?[0-9]{1,4}[)]?[-\s\.]?[(]?[0-9]{1,4}[)]?[-\s\.]?[0-9]{1,9}$/;
     return re.test(phone.replace(/\s/g, ""));
   };
 
@@ -42,23 +43,21 @@ const EnquiryForm = () => {
       newErrors.email = "Please enter a valid email address";
     }
 
-    // Phone validation
-    if (!formData.phone.trim()) {
-      newErrors.phone = "Phone number is required";
-    } else if (!validatePhone(formData.phone)) {
-      newErrors.phone = "Please enter a valid Australian phone number";
+    // Phone validation (optional but validated if provided)
+    if (formData.phone.trim() && !validatePhone(formData.phone)) {
+      newErrors.phone = "Please enter a valid phone number";
     }
 
     // Service type validation
     if (!formData.serviceType) {
-      newErrors.serviceType = "Please select a service";
+      newErrors.serviceType = "Please select an inquiry type";
     }
 
     // Message validation
     if (!formData.message.trim()) {
-      newErrors.message = "Please tell us about your project";
-    } else if (formData.message.trim().length < 10) {
-      newErrors.message = "Message must be at least 10 characters";
+      newErrors.message = "Please share some details about your inquiry";
+    } else if (formData.message.trim().length < 20) {
+      newErrors.message = "Message must be at least 20 characters";
     }
 
     setErrors(newErrors);
@@ -130,21 +129,23 @@ const EnquiryForm = () => {
   return (
     <div
       id="contact-form"
-      className="bg-gradient-to-br from-orange-400 to-orange-500 rounded-lg shadow-lg p-8 max-w-2xl mx-auto"
+      className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-grey-10 p-8 max-w-2xl mx-auto"
     >
-      <h2 className="text-3xl font-bold text-gray-800 mb-2">Send Inquiry</h2>
-      <p className="text-gray-600 mb-6">
-        Fill out the form below and we'll get back to you within 24 hours.
+      <h2 className="font-display text-3xl font-normal text-grey-100 mb-2 tracking-wide">
+        Get in Touch
+      </h2>
+      <p className="font-text text-grey-60 mb-8 text-sm">
+        Share your vision, and I'll get back to you within 48 hours.
       </p>
 
-      <form onSubmit={handleSubmit} className="space-y-5">
+      <form onSubmit={handleSubmit} className="space-y-6">
         {/* Name */}
         <div>
           <label
             htmlFor="name"
-            className="block text-sm font-medium text-gray-700 mb-1"
+            className="block font-text text-sm font-medium text-grey-80 mb-2"
           >
-            Your name *
+            Your Name *
           </label>
           <input
             type="text"
@@ -152,13 +153,13 @@ const EnquiryForm = () => {
             name="name"
             value={formData.name}
             onChange={handleChange}
-            className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-orange-400 focus:border-transparent outline-none transition ${
-              errors.name ? "border-red-500" : "border-gray-300"
+            className={`w-full px-4 py-3 border rounded-lg bg-white font-text text-grey-100 placeholder:text-grey-40 focus:ring-2 focus:ring-primary-40 focus:border-transparent outline-none transition ${
+              errors.name ? "border-red-400" : "border-grey-20"
             }`}
-            placeholder="John Smith"
+            placeholder="Jane Doe"
           />
           {errors.name && (
-            <p className="text-red-700 text-sm mt-1 bg-white px-3 py-2 rounded-md font-medium">
+            <p className="text-red-600 text-xs mt-2 font-text bg-red-50 px-3 py-2 rounded-md">
               ⚠ {errors.name}
             </p>
           )}
@@ -168,9 +169,9 @@ const EnquiryForm = () => {
         <div>
           <label
             htmlFor="email"
-            className="block text-sm font-medium text-gray-700 mb-1"
+            className="block font-text text-sm font-medium text-grey-80 mb-2"
           >
-            Your email *
+            Email Address *
           </label>
           <input
             type="email"
@@ -178,13 +179,13 @@ const EnquiryForm = () => {
             name="email"
             value={formData.email}
             onChange={handleChange}
-            className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-orange-400 focus:border-transparent outline-none transition ${
-              errors.email ? "border-red-500" : "border-gray-300"
+            className={`w-full px-4 py-3 border rounded-lg bg-white font-text text-grey-100 placeholder:text-grey-40 focus:ring-2 focus:ring-primary-40 focus:border-transparent outline-none transition ${
+              errors.email ? "border-red-400" : "border-grey-20"
             }`}
-            placeholder="john@example.com"
+            placeholder="jane@example.com"
           />
           {errors.email && (
-            <p className="text-red-700 text-sm mt-1 bg-white px-3 py-2 rounded-md font-medium">
+            <p className="text-red-600 text-xs mt-2 font-text bg-red-50 px-3 py-2 rounded-md">
               ⚠ {errors.email}
             </p>
           )}
@@ -194,9 +195,10 @@ const EnquiryForm = () => {
         <div>
           <label
             htmlFor="phone"
-            className="block text-sm font-medium text-gray-700 mb-1"
+            className="block font-text text-sm font-medium text-grey-80 mb-2"
           >
-            Your phone number *
+            Phone Number{" "}
+            <span className="text-grey-40 font-light">(optional)</span>
           </label>
           <input
             type="tel"
@@ -204,46 +206,45 @@ const EnquiryForm = () => {
             name="phone"
             value={formData.phone}
             onChange={handleChange}
-            className={`w-full px-4 py-3 border rounded-lg bg-white focus:ring-2 focus:ring-orange-400 focus:border-transparent outline-none transition ${
-              errors.phone ? "border-red-500" : "border-gray-300"
+            className={`w-full px-4 py-3 border rounded-lg bg-white font-text text-grey-100 placeholder:text-grey-40 focus:ring-2 focus:ring-primary-40 focus:border-transparent outline-none transition ${
+              errors.phone ? "border-red-400" : "border-grey-20"
             }`}
-            placeholder="0400 000 000"
+            placeholder="+61 400 000 000"
           />
           {errors.phone && (
-            <p className="text-red-700 text-sm mt-1 bg-white px-3 py-2 rounded-md font-medium">
+            <p className="text-red-600 text-xs mt-2 font-text bg-red-50 px-3 py-2 rounded-md">
               ⚠ {errors.phone}
             </p>
           )}
         </div>
 
-        {/* Service Type */}
+        {/* Inquiry Type */}
         <div>
           <label
             htmlFor="serviceType"
-            className="block text-sm font-medium text-gray-700 mb-1"
+            className="block font-text text-sm font-medium text-grey-80 mb-2"
           >
-            Service Required *
+            Inquiry Type *
           </label>
           <CustomSelect
             value={formData.serviceType}
             onChange={handleChange}
             error={errors.serviceType}
-            placeholder="Select a service..."
+            placeholder="Select inquiry type..."
             options={[
-              { value: "", label: "Select a service..." },
-              { value: "roof-installation", label: "Roof Installation" },
-              { value: "roof-repair", label: "Roof Repair" },
-              { value: "roof-replacement", label: "Roof Replacement" },
-              { value: "roof-plumbing", label: "Roof Plumbing" },
-              { value: "gutter-installation", label: "Gutter Installation" },
-              { value: "gutter-cleaning", label: "Gutter Cleaning" },
-              { value: "leak-repair", label: "Leak Repair" },
-              { value: "inspection", label: "Roof Inspection" },
+              { value: "", label: "Select inquiry type..." },
+              { value: "commission", label: "Commission Work" },
+              { value: "collaboration", label: "Collaboration" },
+              { value: "exhibition", label: "Exhibition Inquiry" },
+              { value: "purchase", label: "Purchase Artwork" },
+              { value: "workshop", label: "Workshop / Teaching" },
+              { value: "interview", label: "Interview / Press" },
+              { value: "consultation", label: "Consultation" },
               { value: "other", label: "Other" },
             ]}
           />
           {errors.serviceType && (
-            <p className="text-red-700 text-sm mt-1 bg-white px-3 py-2 rounded-md font-medium">
+            <p className="text-red-600 text-xs mt-2 font-text bg-red-50 px-3 py-2 rounded-md">
               ⚠ {errors.serviceType}
             </p>
           )}
@@ -253,9 +254,9 @@ const EnquiryForm = () => {
         <div>
           <label
             htmlFor="message"
-            className="block text-sm font-medium text-gray-700 mb-1"
+            className="block font-text text-sm font-medium text-grey-80 mb-2"
           >
-            Tell me about your Enquiry... *
+            Your Message *
           </label>
           <textarea
             id="message"
@@ -263,13 +264,13 @@ const EnquiryForm = () => {
             value={formData.message}
             onChange={handleChange}
             rows="5"
-            className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-orange-400 focus:border-transparent outline-none transition resize-none ${
-              errors.message ? "border-red-500" : "border-gray-300"
+            className={`w-full px-4 py-3 border rounded-lg bg-white font-text text-grey-100 placeholder:text-grey-40 focus:ring-2 focus:ring-primary-40 focus:border-transparent outline-none transition resize-none ${
+              errors.message ? "border-red-400" : "border-grey-20"
             }`}
-            placeholder="Please describe your roofing needs..."
+            placeholder="Tell me about your project, vision, or inquiry..."
           ></textarea>
           {errors.message && (
-            <p className="text-red-700 text-sm mt-1 bg-white px-3 py-2 rounded-md font-medium">
+            <p className="text-red-600 text-xs mt-2 font-text bg-red-50 px-3 py-2 rounded-md">
               ⚠ {errors.message}
             </p>
           )}
@@ -280,25 +281,28 @@ const EnquiryForm = () => {
           <button
             type="submit"
             disabled={status === "sending"}
-            className="w-full bg-black text-white px-6 py-4 rounded-lg font-semibold transition-all duration-300 hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-primary-80 text-white px-6 py-4 rounded-lg font-text font-medium transition-all duration-300 hover:bg-primary-60 active:bg-primary-100 disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg"
           >
-            {status === "sending" ? "Sending..." : "Send Inquiry"}
+            {status === "sending" ? "Sending..." : "Send Message"}
           </button>
         </div>
 
         {/* Status Messages */}
         {status === "success" && (
-          <div className="p-4 bg-green-50 border border-green-200 rounded-lg text-green-800 text-center">
-            ✓ Thank you! We've received your inquiry and will contact you within
-            24 hours. Check your email for confirmation.
+          <div className="p-4 bg-primary-10 border border-primary-20 rounded-lg text-primary-100 text-center font-text text-sm">
+            ✓ Thank you for reaching out! I've received your message and will
+            respond within 48 hours.
           </div>
         )}
 
         {status === "error" && (
-          <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-800 text-center">
-            ✗ Something went wrong. Please try again or call us directly at{" "}
-            <a href="tel:0400000000" className="underline font-semibold">
-              0400 000 000
+          <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-center font-text text-sm">
+            ✗ Something went wrong. Please try again or email me directly at{" "}
+            <a
+              href="mailto:hello@tkoldunenko.com"
+              className="underline font-semibold"
+            >
+              hello@tkoldunenko.com
             </a>
           </div>
         )}

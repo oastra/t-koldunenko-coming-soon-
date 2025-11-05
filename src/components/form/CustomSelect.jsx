@@ -28,15 +28,15 @@ const CustomSelect = ({ value, onChange, options, placeholder, error }) => {
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className={`w-full px-4 py-3 border rounded-lg bg-white text-left focus:ring-2 focus:ring-orange-400 focus:border-transparent outline-none transition flex items-center justify-between ${
-          error ? "border-red-500" : "border-gray-300"
+        className={`w-full px-4 py-3 border rounded-lg bg-white text-left font-text focus:ring-2 focus:ring-primary-40 focus:border-transparent outline-none transition flex items-center justify-between ${
+          error ? "border-red-400" : "border-grey-20"
         }`}
       >
-        <span className={value ? "text-gray-900" : "text-gray-400"}>
+        <span className={value ? "text-grey-100" : "text-grey-40"}>
           {selectedOption ? selectedOption.label : placeholder}
         </span>
         <svg
-          className={`w-5 h-5 text-gray-400 transition-transform ${
+          className={`w-5 h-5 text-grey-60 transition-transform ${
             isOpen ? "transform rotate-180" : ""
           }`}
           fill="none"
@@ -53,24 +53,24 @@ const CustomSelect = ({ value, onChange, options, placeholder, error }) => {
       </button>
 
       {isOpen && (
-        <div className="absolute z-10 w-full mt-2 bg-white border border-gray-200 rounded-lg shadow-lg max-h-64 overflow-y-auto">
+        <div className="absolute z-10 w-full mt-2 bg-white border border-grey-20 rounded-lg shadow-xl max-h-64 overflow-y-auto">
           {options.map((option) => (
             <button
               key={option.value}
               type="button"
               onClick={() => handleSelect(option.value)}
-              className={`w-full px-4 py-3 text-left hover:bg-orange-50 transition-colors ${
+              className={`w-full px-4 py-3 text-left font-text transition-colors ${
                 value === option.value
-                  ? "bg-orange-100 text-orange-700 font-medium"
-                  : "text-gray-700"
+                  ? "bg-primary-10 text-primary-80 font-medium"
+                  : "text-grey-80 hover:bg-grey-10"
               } ${
                 option.value === ""
-                  ? "text-gray-400 italic border-b border-gray-200"
+                  ? "text-grey-40 italic border-b border-grey-10"
                   : ""
               }`}
             >
               {value === option.value && (
-                <span className="inline-block mr-2">✓</span>
+                <span className="inline-block mr-2 text-primary-60">✓</span>
               )}
               {option.label}
             </button>
