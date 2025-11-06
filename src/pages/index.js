@@ -15,7 +15,10 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
 
         {/* Open Graph / Social Media */}
-        <meta property="og:title" content="T. Koldunenko | Artist & Designer" />
+        <meta
+          property="og:title"
+          content="Tetiana Koldunenko | Artist & Designer"
+        />
         <meta
           property="og:description"
           content="Artist and designer based in Sydney. Creating visual narratives through exhibitions, publications, and collaborative work."
@@ -39,7 +42,7 @@ export default function Home() {
           name="keywords"
           content="artist Sydney, designer Sydney, contemporary art, visual artist, creative design, exhibitions, art commissions, collaborative art"
         />
-        <meta name="author" content="T. Koldunenko" />
+        <meta name="author" content="Tetiana Koldunenko" />
         <meta name="theme-color" content="#3e6947" />
 
         {/* Favicon */}

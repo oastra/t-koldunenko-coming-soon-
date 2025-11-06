@@ -5,7 +5,7 @@ const HeroSection = () => {
   return (
     <section className="min-h-screen bg-gradient-to-br from-primary-10 via-white to-badge-mint flex items-center justify-center px-gutter-mobile md:px-gutter-tablet lg:px-gutter-desktop py-12 lg:py-20">
       {/* 1 col by default; 2 cols only on XL and up */}
-      <div className="max-w-7xl w-full grid grid-cols-1 xl:grid-cols-2 gap-10 xl:gap-16">
+      <div className="max-w-7xl w-full grid grid-cols-1 xl:grid-cols-2 gap-10 xl:gap-16 mt-12">
         {/* LEFT: portrait + headings + text + email (always first on mobile/tablet) */}
         <div className="text-center xl:text-left">
           {/* Portrait */}
@@ -13,7 +13,7 @@ const HeroSection = () => {
             <div className="absolute inset-0 flex items-center justify-center -z-10">
               <div className=" bg-gradient-to-br mt-3 from-primary-20 to-primary-40 opacity-20 blur-3xl" />
             </div>
-            <div className="relative mx-auto xl:mx-0 w-80 h-80 mt-[80px] lg:mt-0 sm:w-100 sm:h-100 rounded-full overflow-hidden shadow-md">
+            <div className="relative mx-auto xl:mx-0 w-80 h-80 mt-10  sm:w-100 sm:h-100 rounded-full overflow-hidden shadow-md">
               <Image
                 src="/images/tetiana-koldunenko-artist-designer-portrait.webp"
                 alt="Tetiana Koldunenko - Artist & Designer"
@@ -40,7 +40,7 @@ const HeroSection = () => {
               facelift — a fresh new look is on the way! Very soon, it will be
               back in full capacity with updated galleries, news, and more about
               my artistic journey. In the meantime, feel free to reach out — I’d
-              love to hear from you:
+              love to hear from you.
             </p>
             <p className="font-text text-sm md:text-base text-grey-60 leading-relaxed">
               While the full portfolio is under construction, I'm available for
