@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import CustomSelect from "./CustomSelect";
 
-const EnquiryForm = () => {
+export default function EnquiryForm() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -12,9 +12,11 @@ const EnquiryForm = () => {
   });
 
   const [errors, setErrors] = useState({});
-  const [status, setStatus] = useState("");
+  const [status, setStatus] = useState(""); // '', 'sending', 'success', 'error'
+  const firstErrorRef = useRef(null);
 
-  const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const validateEmail = (email) =>
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email || "");
   const validatePhone = (phone) =>
     /^[\+]?[(]?[0-9]{1,4}[)]?[-\s\.]?[(]?[0-9]{1,4}[)]?[-\s\.]?[0-9]{1,9}$/.test(
       (phone || "").replace(/\s/g, "")
@@ -22,31 +24,49 @@ const EnquiryForm = () => {
 
   const validateForm = () => {
     const newErrors = {};
-    if (!(formData.name || "").trim()) newErrors.name = "Name is required";
-    else if ((formData.name || "").trim().length < 2)
+    const name = (formData.name || "").trim();
+    const email = (formData.email || "").trim();
+    const msg = (formData.message || "").trim();
+
+    if (!name) newErrors.name = "Name is required";
+    else if (name.length < 2)
       newErrors.name = "Name must be at least 2 characters";
 
-    if (!(formData.email || "").trim()) newErrors.email = "Email is required";
-    else if (!validateEmail(formData.email))
+    if (!email) newErrors.email = "Email is required";
+    else if (!validateEmail(email))
       newErrors.email = "Please enter a valid email address";
 
-    if (formData.phone && !validatePhone(formData.phone))
+    if (formData.phone && !validatePhone(formData.phone)) {
       newErrors.phone = "Please enter a valid phone number";
+    }
 
     if (!formData.serviceType)
       newErrors.serviceType = "Please select an inquiry type";
 
-    if (!(formData.message || "").trim())
+    if (!msg)
       newErrors.message = "Please share some details about your inquiry";
-    else if ((formData.message || "").trim().length < 20)
-      newErrors.message = "Message must be at least 20 characters";
+    else if (msg.length < 10)
+      newErrors.message = "Message must be at least 10 characters";
 
     setErrors(newErrors);
+    // focus first error field
+    if (Object.keys(newErrors).length) {
+      const firstKey = Object.keys(newErrors)[0];
+      firstErrorRef.current?.querySelector(`[name="${firstKey}"]`)?.focus();
+    }
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+  // Accept both native event and (name, value) signature
+  const handleChange = (eOrName, maybeValue) => {
+    if (eOrName?.target) {
+      const { name, value } = eOrName.target;
+      setFormData((s) => ({ ...s, [name]: value }));
+      if (errors[name]) setErrors((s) => ({ ...s, [name]: "" }));
+      return;
+    }
+    const name = eOrName;
+    const value = maybeValue;
     setFormData((s) => ({ ...s, [name]: value }));
     if (errors[name]) setErrors((s) => ({ ...s, [name]: "" }));
   };
@@ -78,12 +98,17 @@ const EnquiryForm = () => {
         setErrors({});
       } else {
         setStatus("error");
-        if (data?.errors) setErrors(data.errors);
+        if (data?.errors) {
+          setErrors(data.errors);
+          const firstKey = Object.keys(data.errors)[0];
+          document.querySelector(`[name="${firstKey}"]`)?.focus();
+        }
       }
     } catch (err) {
       console.error(err);
       setStatus("error");
     } finally {
+      // clear status after 5s
       setTimeout(() => setStatus(""), 5000);
     }
   };
@@ -100,7 +125,12 @@ const EnquiryForm = () => {
         Share your vision, and I&apos;ll get back to you within 48 hours.
       </p>
 
-      <form onSubmit={handleSubmit} className="space-y-6" noValidate>
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-6"
+        noValidate
+        ref={firstErrorRef}
+      >
         {/* honeypot */}
         <input
           type="text"
@@ -127,12 +157,18 @@ const EnquiryForm = () => {
             value={formData.name}
             onChange={handleChange}
             aria-invalid={!!errors.name}
-            className={`w-full px-4 py-3 border rounded-lg bg-white font-text text-grey-100 placeholder:text-grey-40 focus:ring-2 focus:ring-primary-40 focus:border-transparent outline-none transition ${errors.name ? "border-red-400" : "border-grey-20"}`}
+            aria-describedby={errors.name ? "err-name" : undefined}
+            className={`w-full px-4 py-3 border rounded-lg bg-white font-text text-grey-100 placeholder:text-grey-40 focus:ring-2 focus:ring-primary-40 focus:border-transparent outline-none transition ${
+              errors.name ? "border-red-400" : "border-grey-20"
+            }`}
             placeholder="Jane Doe"
           />
           {errors.name && (
-            <p className="text-red-600 text-xs mt-2 font-text bg-red-50 px-3 py-2 rounded-md">
-              ⚠ {errors.name}
+            <p
+              id="err-name"
+              className="text-red-600 text-xs mt-2 font-text bg-red-50 px-3 py-2 rounded-md"
+            >
+              {errors.name}
             </p>
           )}
         </div>
@@ -152,12 +188,18 @@ const EnquiryForm = () => {
             value={formData.email}
             onChange={handleChange}
             aria-invalid={!!errors.email}
-            className={`w-full px-4 py-3 border rounded-lg bg-white font-text text-grey-100 placeholder:text-grey-40 focus:ring-2 focus:ring-primary-40 focus:border-transparent outline-none transition ${errors.email ? "border-red-400" : "border-grey-20"}`}
+            aria-describedby={errors.email ? "err-email" : undefined}
+            className={`w-full px-4 py-3 border rounded-lg bg-white font-text text-grey-100 placeholder:text-grey-40 focus:ring-2 focus:ring-primary-40 focus:border-transparent outline-none transition ${
+              errors.email ? "border-red-400" : "border-grey-20"
+            }`}
             placeholder="jane@example.com"
           />
           {errors.email && (
-            <p className="text-red-600 text-xs mt-2 font-text bg-red-50 px-3 py-2 rounded-md">
-              ⚠ {errors.email}
+            <p
+              id="err-email"
+              className="text-red-600 text-xs mt-2 font-text bg-red-50 px-3 py-2 rounded-md"
+            >
+              {errors.email}
             </p>
           )}
         </div>
@@ -178,12 +220,18 @@ const EnquiryForm = () => {
             value={formData.phone}
             onChange={handleChange}
             aria-invalid={!!errors.phone}
-            className={`w-full px-4 py-3 border rounded-lg bg-white font-text text-grey-100 placeholder:text-grey-40 focus:ring-2 focus:ring-primary-40 focus:border-transparent outline-none transition ${errors.phone ? "border-red-400" : "border-grey-20"}`}
+            aria-describedby={errors.phone ? "err-phone" : undefined}
+            className={`w-full px-4 py-3 border rounded-lg bg-white font-text text-grey-100 placeholder:text-grey-40 focus:ring-2 focus:ring-primary-40 focus:border-transparent outline-none transition ${
+              errors.phone ? "border-red-400" : "border-grey-20"
+            }`}
             placeholder="+61 400 000 000"
           />
           {errors.phone && (
-            <p className="text-red-600 text-xs mt-2 font-text bg-red-50 px-3 py-2 rounded-md">
-              ⚠ {errors.phone}
+            <p
+              id="err-phone"
+              className="text-red-600 text-xs mt-2 font-text bg-red-50 px-3 py-2 rounded-md"
+            >
+              {errors.phone}
             </p>
           )}
         </div>
@@ -196,10 +244,12 @@ const EnquiryForm = () => {
           >
             Inquiry Type *
           </label>
+
+          {/* CustomSelect calls onChange(value) */}
           <CustomSelect
+            name="serviceType"
             value={formData.serviceType}
-            onChange={handleChange}
-            error={errors.serviceType}
+            onChange={handleChange} // <-- not (val) => ...
             placeholder="Select inquiry type..."
             options={[
               { value: "", label: "Select inquiry type..." },
@@ -213,9 +263,13 @@ const EnquiryForm = () => {
               { value: "other", label: "Other" },
             ]}
           />
+
           {errors.serviceType && (
-            <p className="text-red-600 text-xs mt-2 font-text bg-red-50 px-3 py-2 rounded-md">
-              ⚠ {errors.serviceType}
+            <p
+              id="err-serviceType"
+              className="text-red-600 text-xs mt-2 font-text bg-red-50 px-3 py-2 rounded-md"
+            >
+              {errors.serviceType}
             </p>
           )}
         </div>
@@ -233,14 +287,20 @@ const EnquiryForm = () => {
             name="message"
             value={formData.message}
             onChange={handleChange}
-            rows="5"
+            rows={5}
             aria-invalid={!!errors.message}
-            className={`w-full px-4 py-3 border rounded-lg bg-white font-text text-grey-100 placeholder:text-grey-40 focus:ring-2 focus:ring-primary-40 focus:border-transparent outline-none transition resize-none ${errors.message ? "border-red-400" : "border-grey-20"}`}
+            aria-describedby={errors.message ? "err-message" : undefined}
+            className={`w-full px-4 py-3 border rounded-lg bg-white font-text text-grey-100 placeholder:text-grey-40 focus:ring-2 focus:ring-primary-40 focus:border-transparent outline-none transition resize-none ${
+              errors.message ? "border-red-400" : "border-grey-20"
+            }`}
             placeholder="Tell me about your project, vision, or inquiry..."
           />
           {errors.message && (
-            <p className="text-red-600 text-xs mt-2 font-text bg-red-50 px-3 py-2 rounded-md">
-              ⚠ {errors.message}
+            <p
+              id="err-message"
+              className="text-red-600 text-xs mt-2 font-text bg-red-50 px-3 py-2 rounded-md"
+            >
+              {errors.message}
             </p>
           )}
         </div>
@@ -257,26 +317,26 @@ const EnquiryForm = () => {
         </div>
 
         {/* Status Messages */}
-        {status === "success" && (
-          <div className="p-4 bg-primary-10 border border-primary-20 rounded-lg text-primary-100 text-center font-text text-sm">
-            ✓ Thanks! Your message has been received. I’ll reply within 48
-            hours.
-          </div>
-        )}
-        {status === "error" && (
-          <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-center font-text text-sm">
-            ✗ Something went wrong. Please try again or email{" "}
-            <a
-              href="mailto:t.koldunenko@gmail.com"
-              className="underline font-semibold"
-            >
-              t.koldunenko@gmail.com
-            </a>
-          </div>
-        )}
+        <div aria-live="polite">
+          {status === "success" && (
+            <div className="p-4 bg-primary-10 border border-primary-20 rounded-lg text-primary-100 text-center font-text text-sm">
+              Thanks. Your message has been received. I will reply within 48
+              hours.
+            </div>
+          )}
+          {status === "error" && (
+            <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-center font-text text-sm">
+              Something went wrong. Please try again or email{" "}
+              <a
+                href="mailto:t.koldunenko@gmail.com"
+                className="underline font-semibold"
+              >
+                t.koldunenko@gmail.com
+              </a>
+            </div>
+          )}
+        </div>
       </form>
     </div>
   );
-};
-
-export default EnquiryForm;
+}

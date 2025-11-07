@@ -1,6 +1,13 @@
 import { useState, useRef, useEffect } from "react";
 
-const CustomSelect = ({ value, onChange, options, placeholder, error }) => {
+const CustomSelect = ({
+  name = "serviceType",
+  value,
+  onChange,
+  options,
+  placeholder,
+  error,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -17,7 +24,7 @@ const CustomSelect = ({ value, onChange, options, placeholder, error }) => {
   }, []);
 
   const handleSelect = (optionValue) => {
-    onChange({ target: { name: "serviceType", value: optionValue } });
+    onChange?.({ target: { name, value: optionValue } });
     setIsOpen(false);
   };
 
