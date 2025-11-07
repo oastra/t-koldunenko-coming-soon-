@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer";
+import { ownerHtml, ackHtml } from "@/lib/emailTemplates";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") return res.status(405).end("Method Not Allowed");
@@ -17,35 +18,23 @@ export default async function handler(req, res) {
     // Optional: verify connection/auth (helps during setup)
     await transporter.verify();
 
-    // Owner email
+    // Send to owner
     const info = await transporter.sendMail({
-      from: process.env.MAIL_FROM, // "Tetiana … <t.koldunenko@gmail.com>"
-      to: process.env.MAIL_TO, // your inbox
-      replyTo: email, // user’s email
+      from: process.env.MAIL_FROM,
+      to: process.env.MAIL_TO,
+      replyTo: email,
       subject: `New enquiry from ${name}`,
-      text: `From: ${name}\nEmail: ${email}\nPhone: ${phone}\nType: ${serviceType}\n\n${message}`,
+      html: ownerHtml({ name, email, phone, serviceType, message }),
+      text: `From: ${name}\nEmail: ${email}\nPhone: ${phone}\nType: ${serviceType}\n\n${message}`, // fallback
     });
 
-    console.log("✅ Owner mail:", {
-      messageId: info.messageId,
-      accepted: info.accepted,
-      rejected: info.rejected,
-      response: info.response,
-    });
-
-    // Optional: auto-reply to the sender
+    // Auto-reply to sender
     const ack = await transporter.sendMail({
       from: process.env.MAIL_FROM,
       to: email,
       subject: "We received your enquiry",
-      text: `Hi ${name}, thanks for reaching out. We'll reply within 48 hours.\n\n— Tetiana`,
-    });
-
-    console.log("✅ Ack mail:", {
-      messageId: ack.messageId,
-      accepted: ack.accepted,
-      rejected: ack.rejected,
-      response: ack.response,
+      html: ackHtml({ name, email, phone, serviceType, message }),
+      text: `Hi ${name},\n\nThanks for reaching out. We'll reply within 48 hours.\n\n— Tetiana`,
     });
 
     return res.status(200).json({ ok: true });
