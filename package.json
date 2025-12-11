@@ -12,8 +12,8 @@
     "@tabler/icons-react": "^3.34.1",
     "next": "^15.4.5",
     "nodemailer": "^7.0.10",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
+    "react": "^19.2.1",
+    "react-dom": "^19.2.1",
     "resend": "^6.4.0"
   },
   "devDependencies": {
